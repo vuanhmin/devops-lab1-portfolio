@@ -306,6 +306,7 @@ File thông tin sinh viên: `ho_ten_mssv.txt`
 - [x] Push code → pipeline chạy → website cập nhật.
 - [x] Có bảng so sánh DevOps và cách làm truyền thống.
 - [x] Có sơ đồ workflow và câu trả lời cho 3 câu hỏi lab.
+- [x] Phiên bản hiện tại: `v1.2` — đã xác minh pipeline và cập nhật website tự động.
 
 ---
 
