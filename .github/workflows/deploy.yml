@@ -1,0 +1,57 @@
+# ============================================================
+# DevOps Lab 1 - CI/CD Pipeline voi GitHub Actions
+# Tu dong kiem tra va deploy website tinh len GitHub Pages
+# moi khi push code len nhanh main.
+# ============================================================
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+
+      - name: Validate HTML
+        run: |
+          set -e
+
+          echo "Checking index.html exists..."
+          test -s index.html
+          echo "index.html found. File size: $(wc -c < index.html) bytes"
+
+          grep -qi "<!DOCTYPE html>" index.html
+          grep -q "</html>" index.html
+          grep -q "Deploy to GitHub Pages" .github/workflows/deploy.yml
+
+          if grep -q "YOUR_USERNAME" index.html; then
+            echo "ERROR: Placeholder YOUR_USERNAME still exists in index.html"
+            exit 1
+          fi
+
+          echo "HTML validation passed."
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          commit_message: "Auto-deploy from CI pipeline"
+          user_name: "github-actions[bot]"
+          user_email: "41898282+github-actions[bot]@users.noreply.github.com"
